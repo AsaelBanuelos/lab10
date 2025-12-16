@@ -7,20 +7,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
+    // Repository used to manage User entities
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public User createUser(String username, String email, String password) {
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-        User user = new User(username, email, password);
+    // Creates and saves a new user in the database
+    public User createUser(String email, String password) {
+        User user = new User(email, password);
         return userRepository.save(user);
     }
 
+    // Simple authentication check using email and password
+    // (For demo purposes only, passwords are not encrypted)
     public boolean authenticate(String email, String password) {
         return userRepository.findByEmail(email)
                 .map(u -> u.getPassword().equals(password))

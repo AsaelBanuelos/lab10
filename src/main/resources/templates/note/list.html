@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>Notes</h2>
+<p th:if="${uploaded}">✅ File uploaded successfully!</p>
+<h3>Uploaded files</h3>
+<ul>
+    <li th:each="f : ${uploadedFiles}" th:text="${f}"></li>
+</ul>
+
+<a href="/notes/create">Create</a>
+<ul>
+    <li th:each="n : ${notes}">
+        <b th:text="${n.title}"></b> - <span th:text="${n.content}"></span>
+    </li>
+</ul>
+</body>
+</html>
