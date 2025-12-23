@@ -1,8 +1,13 @@
+# Maven / Spring Boot
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+# =========================
+# IDEs
+# =========================
 
 ### STS ###
 .apt_generated
@@ -14,7 +19,7 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -32,6 +37,24 @@ build/
 ### VS Code ###
 .vscode/
 
+# =========================
+# Environment & runtime
+# =========================
 
+# Environment variables
 .env
+
+# SQLite database (local)
 *.db
+*.sqlite
+*.sqlite3
+
+# Uploaded files (generated at runtime)
+uploads/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
