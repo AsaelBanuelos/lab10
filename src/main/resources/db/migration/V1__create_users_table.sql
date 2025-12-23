@@ -1,10 +1,13 @@
-CREATE TABLE users (
-  id BIGINT PRIMARY KEY,
-  username TEXT NOT NULL,
+-- Create users table (SQLite-friendly for JPA IDENTITY)
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL UNIQUE,
   email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL
 );
-CREATE TABLE notes (
+
+-- Create notes table
+CREATE TABLE IF NOT EXISTS notes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   title TEXT NOT NULL,
   content TEXT NOT NULL

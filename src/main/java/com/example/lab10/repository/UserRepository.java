@@ -5,11 +5,41 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-// Repository interface for User entity
-// Spring Data JPA automatically implements this interface
-public interface UserRepository extends JpaRepository<User, Long> {
+/**
+ * Spring Data JPA repository for User entity operations.
+ *
+ * Provides automatic CRUD operations and custom query methods
+ * for user authentication and management.
+ *
+ * Spring Data JPA automatically implements methods based on their names:
+ * - findByUsername - Queries by username field
+ * - findByEmail - Queries by email field
+ *
+ * Returns Optional<User> to safely handle cases where a user is not found.
+ */
+public interface UserRepository extends JpaRepository<User, Integer> {
 
-    // Custom query method to find a user by email
-    // Returns Optional to handle the case where the user does not exist
+    /**
+     * Finds a user by username.
+     *
+     * In this application, username is the same as email.
+     * Used by Spring Security during authentication.
+     *
+     * @param username The username to search for
+     * @return Optional containing the user if found, empty otherwise
+     */
+    Optional<User> findByUsername(String username);
+
+    /**
+     * Finds a user by email address.
+     *
+     * Used during:
+     * - User registration (to check if email already exists)
+     * - Login authentication
+     * - User lookup operations
+     *
+     * @param email The email address to search for
+     * @return Optional containing the user if found, empty otherwise
+     */
     Optional<User> findByEmail(String email);
 }

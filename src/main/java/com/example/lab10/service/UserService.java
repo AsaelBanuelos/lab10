@@ -2,29 +2,72 @@ package com.example.lab10.service;
 
 import com.example.lab10.model.User;
 import com.example.lab10.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service layer for user management and authentication operations.
+ * Handles user registration, password hashing, and user-related business logic.
+ *
+ * Security considerations:
+ * - Passwords are never stored in plain text
+ * - BCrypt hashing is used for password security
+ * - Email addresses are normalized (trimmed and lowercased)
+ * - All users receive ROLE_USER by default
+ */
 @Service
 public class UserService {
 
-    // Repository used to manage User entities
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    /**
+     * Constructor injection for dependencies.
+     *
+     * @param userRepository Repository for user data access
+     * @param passwordEncoder BCrypt encoder for password hashing
+     */
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // Creates and saves a new user in the database
-    public User createUser(String email, String password) {
-        User user = new User(email, password);
+    /**
+     * Registers a new user account with a hashed password.
+     *
+     * Registration process:
+     * 1. Normalize email (trim whitespace, convert to lowercase)
+     * 2. Hash the password using BCrypt
+     * 3. Create User entity with normalized email and hashed password
+     * 4. Set default role to ROLE_USER
+     * 5. Save to database
+     *
+     * Security features:
+     * - Password is hashed with BCrypt (strength 12)
+     * - Email normalization prevents duplicate accounts with different casing
+     * - Username and email are set to the same value
+     *
+     * @param email The user's email address (will be normalized)
+     * @param rawPassword The plain text password (will be hashed)
+     * @return The saved User entity with generated ID
+     */
+    public User register(String email, String rawPassword) {
+        // Normalize email to avoid case-sensitivity issues and whitespace problems
+        String normalizedEmail = email.trim().toLowerCase();
+
+        // Hash the password using BCrypt
+        // The encoder automatically generates a unique salt for each password
+        String hashed = passwordEncoder.encode(rawPassword);
+
+        // Debug logs: Track registration and verify password hashing
+        System.out.println("REGISTER -> email=" + "[" + normalizedEmail + "]" + ", hashed=" + hashed);
+        System.out.println("ENCODER TEST -> matches? " + passwordEncoder.matches(rawPassword, hashed));
+
+        // Create new user with normalized email as both username and email
+        // Default role is ROLE_USER
+        User user = new User(normalizedEmail, normalizedEmail, hashed, "ROLE_USER");
+
+        // Persist the user to the database
         return userRepository.save(user);
-    }
-
-    // Simple authentication check using email and password
-    // (For demo purposes only, passwords are not encrypted)
-    public boolean authenticate(String email, String password) {
-        return userRepository.findByEmail(email)
-                .map(u -> u.getPassword().equals(password))
-                .orElse(false);
     }
 }
