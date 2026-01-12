@@ -60,8 +60,8 @@ public class UserService {
         String hashed = passwordEncoder.encode(rawPassword);
 
         // Debug logs: Track registration and verify password hashing
-        System.out.println("REGISTER -> email=" + "[" + normalizedEmail + "]" + ", hashed=" + hashed);
-        System.out.println("ENCODER TEST -> matches? " + passwordEncoder.matches(rawPassword, hashed));
+//        System.out.println("REGISTER -> email=" + "[" + normalizedEmail + "]" + ", hashed=" + hashed);
+//        System.out.println("ENCODER TEST -> matches? " + passwordEncoder.matches(rawPassword, hashed));
 
         // Create new user with normalized email as both username and email
         // Default role is ROLE_USER

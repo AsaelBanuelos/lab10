@@ -51,16 +51,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         String normalized = username.trim().toLowerCase();
 
         // Debug log: Track authentication attempts
-        System.out.println("LOAD USER -> username=" + "[" + normalized + "]");
+//        System.out.println("LOAD USER -> username=" + "[" + normalized + "]");
 
         // Query the database for the user by email
         User user = userRepository.findByEmail(normalized)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + normalized));
 
         // Debug logs: Show retrieved user information
-        System.out.println("LOAD USER -> found=" + user.getEmail());
-        System.out.println("LOAD USER -> storedHash=" + user.getPassword());
-        System.out.println("LOAD USER -> role=" + user.getRole());
+//        System.out.println("LOAD USER -> found=" + user.getEmail());
+//        System.out.println("LOAD USER -> storedHash=" + user.getPassword());
+//        System.out.println("LOAD USER -> role=" + user.getRole());
 
         // Convert our User entity to Spring Security's UserDetails
         // This includes email, password hash, and role(s) for authorization

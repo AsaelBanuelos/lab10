@@ -86,11 +86,16 @@ public class GlobalExceptionHandler {
      * @return Error view name
      */
     @ExceptionHandler(ResponseStatusException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleResponseStatus(ResponseStatusException ex, Model model) {
+    public String handleResponseStatus(
+            ResponseStatusException ex,
+            jakarta.servlet.http.HttpServletResponse response,
+            Model model
+    ) {
+        response.setStatus(ex.getStatusCode().value());
         model.addAttribute("message", ex.getReason());
         return "error";
     }
+
 
     /**
      * Generic fallback exception handler for unexpected errors.
