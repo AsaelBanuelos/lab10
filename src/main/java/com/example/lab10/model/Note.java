@@ -5,13 +5,7 @@ import jakarta.persistence.*;
 /**
  * JPA Entity representing a note in the database.
  * Maps to the "notes" table and stores note data with ownership information.
- *
- * Key features:
- * - Every note belongs to exactly one user (ownership)
- * - Notes are loaded lazily (not fetched until accessed)
- * - Title and content are required (NOT NULL in database)
- * - Content has a maximum length of 1000 characters
- *
+
  * Database relationships:
  * - ManyToOne relationship with User entity
  * - Uses foreign key constraint on user_id column
@@ -46,7 +40,7 @@ public class Note {
 
     /**
      * The user who owns this note.
-     *
+
      * Relationship details:
      * - ManyToOne: Many notes can belong to one user
      * - optional = false: Every note MUST have an owner (cannot be null)
@@ -66,10 +60,6 @@ public class Note {
 
     /**
      * Constructor for creating a new note with all required fields.
-     *
-     * @param title The title of the note
-     * @param content The content/body of the note
-     * @param owner The user who owns this note
      */
     public Note(String title, String content, User owner) {
         this.title = title;
@@ -79,8 +69,6 @@ public class Note {
 
     /**
      * Gets the note ID.
-     *
-     * @return The database-generated note ID
      */
     public Integer getId() {
         return id;
@@ -88,8 +76,6 @@ public class Note {
 
     /**
      * Gets the note title.
-     *
-     * @return The note title
      */
     public String getTitle() {
         return title;
@@ -97,8 +83,6 @@ public class Note {
 
     /**
      * Sets the note title.
-     *
-     * @param title The new title
      */
     public void setTitle(String title) {
         this.title = title;
@@ -106,8 +90,6 @@ public class Note {
 
     /**
      * Gets the note content.
-     *
-     * @return The note content/body
      */
     public String getContent() {
         return content;
@@ -115,8 +97,6 @@ public class Note {
 
     /**
      * Sets the note content.
-     *
-     * @param content The new content
      */
     public void setContent(String content) {
         this.content = content;
@@ -124,8 +104,6 @@ public class Note {
 
     /**
      * Gets the owner of this note.
-     *
-     * @return The User who owns this note
      */
     public User getOwner() {
         return owner;
@@ -133,8 +111,6 @@ public class Note {
 
     /**
      * Sets the owner of this note.
-     *
-     * @param owner The user who should own this note
      */
     public void setOwner(User owner) {
         this.owner = owner;

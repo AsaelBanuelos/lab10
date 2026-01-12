@@ -22,11 +22,6 @@ public class SecurityHeadersInterceptor implements HandlerInterceptor {
      * The policy "default-src 'self'" means:
      * - Only resources from the same origin can be loaded
      * - External scripts, styles, images, etc. are blocked
-     *
-     * @param request The incoming HTTP request
-     * @param response The HTTP response to be sent
-     * @param handler The controller method that will handle the request
-     * @return true to continue with request processing, false to stop
      */
     @Override
     public boolean preHandle(

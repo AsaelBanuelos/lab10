@@ -39,8 +39,6 @@ public class NoteController {
     /**
      * Constructor that injects the NoteService dependency.
      * Spring automatically provides the service when this controller is created.
-     *
-     * @param noteService Service layer that handles note business logic
      */
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
@@ -53,17 +51,6 @@ public class NoteController {
     /**
      * Displays the list of all notes belonging to the current user.
      * Also lists all uploaded files in the user's uploads directory.
-     *
-     * Process:
-     * 1. Retrieve all notes from the database for the current user
-     * 2. Check if a file was just uploaded (from the ?uploaded query parameter)
-     * 3. List all files in the user's upload directory
-     * 4. Pass all data to the template for display
-     *
-     * @param uploaded Query parameter - if present, shows upload success message
-     * @param model Model object to pass data to the Thymeleaf template
-     * @return View name "note/list" which displays the notes list template
-     * @throws Exception if file system operations fail
      */
     @GetMapping
     public String list(
@@ -101,9 +88,6 @@ public class NoteController {
     /**
      * Displays the form for creating a new note.
      * Prepares an empty note creation form for the user to fill in.
-     *
-     * @param model Model object to pass the empty form to the template
-     * @return View name "note/create" which displays the note creation form
      */
     @GetMapping("/create")
     public String showCreate(Model model) {
@@ -115,10 +99,6 @@ public class NoteController {
     /**
      * Displays the edit form for an existing note.
      * Pre-fills the form with the note's current title and content.
-     *
-     * @param id The ID of the note to edit (from the URL path)
-     * @param model Model object to pass the form data to the template
-     * @return View name "note/edit" which displays the edit form
      */
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable("id") Integer id, Model model) {
@@ -143,21 +123,10 @@ public class NoteController {
     /**
      * Creates a new note from an HTML form submission.
      * This method accepts form-encoded data (typical HTML form).
-     *
+
      * Validation:
      * - Title: Not blank, minimum 3 characters
      * - Content: Not blank, maximum 1000 characters
-     *
-     * Process:
-     * 1. Spring validates the form input against @Valid annotations
-     * 2. If validation fails, return to form with error messages
-     * 3. If valid, create the note using the service layer
-     * 4. Redirect to notes list (Post-Redirect-Get pattern)
-     *
-     * @param req The note creation request DTO containing title and content
-     * @param binding Result of Spring validation with any error messages
-     * @param model Model object for passing data back to the template
-     * @return Redirect to notes list on success, or form with errors on failure
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String createFromForm(
@@ -184,9 +153,6 @@ public class NoteController {
      * Useful for testing or integrating with JavaScript/other clients.
      *
      * Validation: Same as HTML form creation
-     *
-     * @param req The note creation request DTO from JSON body
-     * @return Redirect to notes list
      */
     @PostMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -204,18 +170,6 @@ public class NoteController {
 
     /**
      * Updates an existing note with new title and content.
-     *
-     * Validation:
-     * - Title: Not blank, minimum 3 characters
-     * - Content: Not blank, maximum 1000 characters
-     *
-     * Security: Ownership is verified by the service layer (will throw 404 if not owned)
-     *
-     * @param id The ID of the note to edit (from the URL path)
-     * @param req The updated note data
-     * @param binding Result of Spring validation with any error messages
-     * @param model Model object for passing data back to the template
-     * @return Redirect to notes list on success, or edit form with errors on failure
      */
     @PostMapping(value = "/{id}/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String editSubmit(
@@ -248,9 +202,6 @@ public class NoteController {
      *
      * Security: Ownership is verified by the service layer
      * (will throw 404 if the note doesn't exist or isn't owned by the user)
-     *
-     * @param id The ID of the note to delete (from the URL path)
-     * @return Redirect to notes list page
      */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Integer id) {
@@ -268,23 +219,6 @@ public class NoteController {
     /**
      * Handles multipart file uploads from the user.
      * Files are saved to a directory in the user's home folder.
-     *
-     * Security considerations:
-     * - File names are sanitized to prevent path traversal attacks
-     * - Invalid/dangerous characters are replaced with underscores
-     * - Files are saved to a controlled directory, not arbitrary locations
-     * - File size limits are enforced at Spring configuration level
-     *
-     * Process:
-     * 1. Validate that a file was actually selected
-     * 2. Create the upload directory if it doesn't exist
-     * 3. Sanitize the file name to remove dangerous characters
-     * 4. Save the file to disk
-     * 5. Redirect to notes list with upload success indicator
-     *
-     * @param file The uploaded file from the multipart form request
-     * @return Redirect to notes list with ?uploaded=1 parameter
-     * @throws ResponseStatusException with BAD_REQUEST if file is empty or INTERNAL_SERVER_ERROR if save fails
      */
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String upload(@RequestParam("file") MultipartFile file) {

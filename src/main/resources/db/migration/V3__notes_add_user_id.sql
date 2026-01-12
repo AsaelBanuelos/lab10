@@ -9,10 +9,6 @@ CREATE TABLE IF NOT EXISTS notes_new (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- IMPORTANT:
--- If you already had notes, you must decide how to handle them.
--- For the lab (strict ownership), we do NOT migrate old rows by default.
-
 DROP TABLE notes;
 ALTER TABLE notes_new RENAME TO notes;
 

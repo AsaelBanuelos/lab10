@@ -9,10 +9,6 @@ import com.example.lab10.validation.ValidPassword;
 /**
  * Data Transfer Object (DTO) for user registration.
  * Captures and validates user input during account creation.
- *
- * Validation rules:
- * - Email: Required, not blank, valid email format
- * - Password: Required, not blank, minimum 8 characters
  */
 public class RegisterRequest {
 
@@ -36,8 +32,6 @@ public class RegisterRequest {
 
     /**
      * Gets the user's email address.
-     *
-     * @return The email address
      */
     public String getEmail() {
         return email;
@@ -45,8 +39,6 @@ public class RegisterRequest {
 
     /**
      * Sets the user's email address.
-     *
-     * @param email The email address to set
      */
     public void setEmail(String email) {
         this.email = email;
@@ -54,8 +46,6 @@ public class RegisterRequest {
 
     /**
      * Gets the user's password.
-     *
-     * @return The password (plain text, will be hashed before storage)
      */
     public String getPassword() {
         return password;
@@ -63,8 +53,6 @@ public class RegisterRequest {
 
     /**
      * Sets the user's password.
-     *
-     * @param password The password to set
      */
     public void setPassword(String password) {
         this.password = password;

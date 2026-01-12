@@ -21,10 +21,6 @@ public class SecurityConfig {
      * This provider bridges Spring Security with our custom user authentication:
      * 1. UserDetailsService - loads user data from the database
      * 2. PasswordEncoder - verifies passwords using BCrypt hashing
-     *
-     * @param userDetailsService Service that loads user details from database
-     * @param passwordEncoder Encoder for verifying hashed passwords
-     * @return Configured authentication provider
      */
     @Bean
     public DaoAuthenticationProvider authProvider(
@@ -60,11 +56,6 @@ public class SecurityConfig {
      *
      * 4. Everything else - requires authentication (logged in):
      *    - Any other path requires user to be authenticated
-     *
-     * @param http HttpSecurity object for configuration
-     * @param authProvider Custom authentication provider
-     * @return Configured security filter chain
-     * @throws Exception if configuration fails
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

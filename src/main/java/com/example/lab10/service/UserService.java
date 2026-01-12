@@ -8,12 +8,6 @@ import org.springframework.stereotype.Service;
 /**
  * Service layer for user management and authentication operations.
  * Handles user registration, password hashing, and user-related business logic.
- *
- * Security considerations:
- * - Passwords are never stored in plain text
- * - BCrypt hashing is used for password security
- * - Email addresses are normalized (trimmed and lowercased)
- * - All users receive ROLE_USER by default
  */
 @Service
 public class UserService {
@@ -23,9 +17,6 @@ public class UserService {
 
     /**
      * Constructor injection for dependencies.
-     *
-     * @param userRepository Repository for user data access
-     * @param passwordEncoder BCrypt encoder for password hashing
      */
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -34,22 +25,18 @@ public class UserService {
 
     /**
      * Registers a new user account with a hashed password.
-     *
+
      * Registration process:
      * 1. Normalize email (trim whitespace, convert to lowercase)
      * 2. Hash the password using BCrypt
      * 3. Create User entity with normalized email and hashed password
      * 4. Set default role to ROLE_USER
      * 5. Save to database
-     *
+
      * Security features:
      * - Password is hashed with BCrypt (strength 12)
      * - Email normalization prevents duplicate accounts with different casing
      * - Username and email are set to the same value
-     *
-     * @param email The user's email address (will be normalized)
-     * @param rawPassword The plain text password (will be hashed)
-     * @return The saved User entity with generated ID
      */
     public User register(String email, String rawPassword) {
         // Normalize email to avoid case-sensitivity issues and whitespace problems

@@ -13,14 +13,11 @@ public class SecurityHeadersConfig implements WebMvcConfigurer {
 
     /**
      * Registers custom interceptors to process all incoming HTTP requests.
-     *
      * Interceptors allow us to:
      * - Execute code before/after controller methods
      * - Modify requests and responses
      * - Add security headers
      * - Implement cross-cutting concerns
-     *
-     * @param registry Registry for adding interceptors to the application
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

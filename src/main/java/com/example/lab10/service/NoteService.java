@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Service layer for note management operations.
  * Handles all business logic for creating, reading, updating, and deleting notes.
- *
+
  * This service is responsible for:
  * - Managing note ownership (ensuring users can only access their own notes)
  * - Enforcing authorization (checking that current user owns the note)
@@ -31,9 +31,6 @@ public class NoteService {
     /**
      * Constructor that injects the required repository dependencies.
      * Spring automatically provides these when the service is created.
-     *
-     * @param noteRepository Repository for note database operations
-     * @param userRepository Repository for user database lookups
      */
     public NoteService(NoteRepository noteRepository, UserRepository userRepository) {
         this.noteRepository = noteRepository;
@@ -48,20 +45,12 @@ public class NoteService {
      * Gets the currently authenticated user from Spring Security context.
      * This method is used to enforce ownership rules - we ensure every operation
      * is performed on notes belonging to the logged-in user.
-     *
+
      * Process:
      * 1. Get the Authentication object from Spring Security's SecurityContext
      * 2. Extract the username/email from the authentication
      * 3. Look up the User from the database using the email
      * 4. Return the User object (which contains the database ID needed for queries)
-     *
-     * Why lookup from database?
-     * - We need the user's database ID to query their notes
-     * - The database ID is the source of truth for ownership checks
-     * - This prevents ID spoofing or other security issues
-     *
-     * @return The User object of the currently authenticated user
-     * @throws ResponseStatusException UNAUTHORIZED if no user is authenticated or found in database
      */
     private User currentUserOrThrow() {
         // Get the current authentication from Spring Security
@@ -87,11 +76,9 @@ public class NoteService {
 
     /**
      * Retrieves all notes belonging to the current authenticated user.
-     *
+
      * This uses the native SQL query defined in the repository.
      * The query is required by the lab and uses parameter binding for safety.
-     *
-     * @return List of notes owned by the current user (ordered newest first)
      */
     public List<Note> findMyNotes() {
         // Get the currently authenticated user
@@ -104,15 +91,6 @@ public class NoteService {
     /**
      * Retrieves a single note, but only if it belongs to the current user.
      * If the note doesn't exist or doesn't belong to the user, throws 404 error.
-     *
-     * This enforces ownership-based access control:
-     * - Users can only view/modify their own notes
-     * - Trying to access another user's note returns 404 (not 403)
-     * - This prevents leaking information about which notes exist
-     *
-     * @param noteId The ID of the note to retrieve
-     * @return The Note if found and owned by current user
-     * @throws ResponseStatusException NOT_FOUND if note doesn't exist or isn't owned
      */
     public Note getMineOr404(Integer noteId) {
         // Get the currently authenticated user
@@ -130,19 +108,12 @@ public class NoteService {
 
     /**
      * Creates a new note owned by the current authenticated user.
-     *
+
      * Process:
      * 1. Get the current user
      * 2. Create a new Note entity with the title, content, and owner
      * 3. Save to the database
      * 4. Return the saved note (with database-generated ID)
-     *
-     * Security: The note is automatically owned by the logged-in user.
-     * Users cannot create notes for other users.
-     *
-     * @param title The title of the note
-     * @param content The content/body of the note
-     * @return The newly created Note with database-generated ID
      */
     public Note create(String title, String content) {
         // Get the currently authenticated user
@@ -162,20 +133,6 @@ public class NoteService {
     /**
      * Updates an existing note with new title and content.
      * Only works if the note belongs to the current user.
-     *
-     * Process:
-     * 1. Get the note (getMineOr404 ensures ownership and throws 404 if not owned)
-     * 2. Update the title and content fields
-     * 3. Save the changes to the database
-     * 4. Return the updated note
-     *
-     * Security: Ownership is enforced by getMineOr404
-     *
-     * @param noteId The ID of the note to update
-     * @param title The new title
-     * @param content The new content
-     * @return The updated Note object
-     * @throws ResponseStatusException NOT_FOUND if note doesn't exist or isn't owned
      */
     public Note updateMine(Integer noteId, String title, String content) {
         // Get the note and verify ownership (throws 404 if not owned)
@@ -196,15 +153,6 @@ public class NoteService {
     /**
      * Deletes a note belonging to the current user.
      * Only works if the note belongs to the current user.
-     *
-     * Process:
-     * 1. Get the note (getMineOr404 ensures ownership and throws 404 if not owned)
-     * 2. Delete the note from the database
-     *
-     * Security: Ownership is enforced by getMineOr404
-     *
-     * @param noteId The ID of the note to delete
-     * @throws ResponseStatusException NOT_FOUND if note doesn't exist or isn't owned
      */
     public void deleteMine(Integer noteId) {
         // Get the note and verify ownership (throws 404 if not owned)

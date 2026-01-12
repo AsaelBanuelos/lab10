@@ -24,24 +24,17 @@ public @interface ValidTitle {
 
     /**
      * Default error message when validation fails.
-     *
-     * @return The validation error message
      */
     String message() default "Title must be at least 3 characters long";
 
     /**
      * Validation groups - allows grouping constraints for different scenarios.
      * Not currently used in this application.
-     *
-     * @return Array of validation groups
      */
     Class<?>[] groups() default {};
 
     /**
      * Payload for clients of the Bean Validation API.
-     * Can carry additional metadata about the constraint.
-     *
-     * @return Array of payload types
      */
     Class<? extends Payload>[] payload() default {};
 }

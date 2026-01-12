@@ -6,10 +6,6 @@ import jakarta.validation.constraints.Size;
 /**
  * Data Transfer Object (DTO) for creating a new note.
  * This class validates user input from forms or JSON requests.
- *
- * Validation rules:
- * - Title: Required, not blank, minimum 3 characters
- * - Content: Required, not blank, maximum 1000 characters
  */
 public class CreateNoteRequest {
 
@@ -31,8 +27,6 @@ public class CreateNoteRequest {
 
     /**
      * Gets the title of the note.
-     *
-     * @return The note title
      */
     public String getTitle() {
         return title;
@@ -40,8 +34,6 @@ public class CreateNoteRequest {
 
     /**
      * Sets the title of the note.
-     *
-     * @param title The note title to set
      */
     public void setTitle(String title) {
         this.title = title;
@@ -49,8 +41,6 @@ public class CreateNoteRequest {
 
     /**
      * Gets the content of the note.
-     *
-     * @return The note content
      */
     public String getContent() {
         return content;
@@ -58,8 +48,6 @@ public class CreateNoteRequest {
 
     /**
      * Sets the content of the note.
-     *
-     * @param content The note content to set
      */
     public void setContent(String content) {
         this.content = content;

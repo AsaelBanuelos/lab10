@@ -10,10 +10,6 @@ import jakarta.persistence.*;
  * - Passwords are stored using BCrypt hashing (never plain text)
  * - Email addresses are unique to prevent duplicate accounts
  * - Role-based authorization (ROLE_USER, ROLE_ADMIN)
- *
- * Database constraints:
- * - Unique constraints on username and email
- * - NOT NULL constraints on all fields
  */
 @Entity
 @Table(name = "users")
@@ -67,11 +63,6 @@ public class User {
 
     /**
      * Constructor for creating a new user with all fields.
-     *
-     * @param username The username (typically the email)
-     * @param email The user's email address
-     * @param password The BCrypt-hashed password
-     * @param role The user's role (ROLE_USER or ROLE_ADMIN)
      */
     public User(String username, String email, String password, String role) {
         this.username = username;
@@ -82,8 +73,6 @@ public class User {
 
     /**
      * Gets the user ID.
-     *
-     * @return The database-generated user ID
      */
     public Integer getId() {
         return id;
@@ -91,8 +80,6 @@ public class User {
 
     /**
      * Gets the username.
-     *
-     * @return The username (email)
      */
     public String getUsername() {
         return username;
@@ -100,8 +87,6 @@ public class User {
 
     /**
      * Sets the username.
-     *
-     * @param username The new username
      */
     public void setUsername(String username) {
         this.username = username;
@@ -109,8 +94,6 @@ public class User {
 
     /**
      * Gets the email address.
-     *
-     * @return The user's email
      */
     public String getEmail() {
         return email;
@@ -118,8 +101,6 @@ public class User {
 
     /**
      * Sets the email address.
-     *
-     * @param email The new email address
      */
     public void setEmail(String email) {
         this.email = email;
@@ -127,8 +108,6 @@ public class User {
 
     /**
      * Gets the password hash.
-     *
-     * @return The BCrypt-hashed password
      */
     public String getPassword() {
         return password;
@@ -137,8 +116,6 @@ public class User {
     /**
      * Sets the password hash.
      * Should only be set with a properly hashed password.
-     *
-     * @param password The BCrypt-hashed password
      */
     public void setPassword(String password) {
         this.password = password;
@@ -146,8 +123,6 @@ public class User {
 
     /**
      * Gets the user's role.
-     *
-     * @return The role (ROLE_USER or ROLE_ADMIN)
      */
     public String getRole() {
         return role;
@@ -155,8 +130,6 @@ public class User {
 
     /**
      * Sets the user's role.
-     *
-     * @param role The new role
      */
     public void setRole(String role) {
         this.role = role;

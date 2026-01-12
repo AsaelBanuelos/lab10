@@ -14,13 +14,6 @@ public class HelloController {
     /**
      * Simple health check endpoint.
      * Returns "OK" to verify the application is running.
-     *
-     * This is useful for:
-     * - Testing basic HTTP connectivity
-     * - Monitoring application availability
-     * - Verifying the server is responding
-     *
-     * @return Simple text response "OK"
      */
     @GetMapping("/hello")
     public String hello() {
@@ -30,14 +23,6 @@ public class HelloController {
     /**
      * Demonstration endpoint showing how to read HTTP request headers.
      * Extracts and displays common headers from the incoming request.
-     *
-     * Headers extracted:
-     * - User-Agent: Browser/client identification
-     * - Accept: Content types the client accepts
-     *
-     * @param userAgent The User-Agent header from the request (optional)
-     * @param accept The Accept header from the request (optional)
-     * @return Formatted string showing the header values
      */
     @GetMapping("/headers")
     public String headers(

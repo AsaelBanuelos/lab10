@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Custom UserDetailsService implementation for Spring Security.
  * Loads user data from the database during authentication.
- *
+
  * This service bridges the application's User entity with Spring Security's
  * UserDetails interface, allowing Spring Security to authenticate users
  * against our database.
@@ -23,8 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     /**
      * Constructor injection for UserRepository dependency.
-     *
-     * @param userRepository Repository for accessing user data
      */
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -34,15 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Loads user details by username for Spring Security authentication.
      *
      * This method is called automatically by Spring Security when a user
-     * attempts to log in. It:
+     * attempts to log in It:
      * 1. Normalizes the username (email) to lowercase
      * 2. Queries the database for the user
      * 3. Converts the User entity to Spring Security's UserDetails
      * 4. Includes the user's role for authorization
-     *
-     * @param username The username (email) to load
-     * @return UserDetails object containing user authentication data
-     * @throws UsernameNotFoundException if the user is not found in the database
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

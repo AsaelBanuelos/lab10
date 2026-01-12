@@ -19,8 +19,6 @@ public class AuthController {
 
     /**
      * Constructor injection for UserService dependency.
-     *
-     * @param userService Service for user management operations
      */
     public AuthController(UserService userService) {
         this.userService = userService;
@@ -29,9 +27,6 @@ public class AuthController {
     /**
      * Displays the user registration form.
      * Creates an empty RegisterRequest object and binds it to the form.
-     *
-     * @param model Model object to pass data to the view
-     * @return View name for the registration page
      */
     @GetMapping("/register")
     public String registerForm(Model model) {
@@ -42,15 +37,11 @@ public class AuthController {
     /**
      * Processes the registration form submission.
      * Validates user input and creates a new user account.
-     *
+
      * Validation includes:
      * - Email format check
      * - Password minimum length
      * - Required field validation
-     *
-     * @param req The registration request DTO with user input
-     * @param binding Binding result containing validation errors
-     * @return Redirect to login page on success, or registration form with errors
      */
     @PostMapping("/register")
     public String registerSubmit(
@@ -71,9 +62,6 @@ public class AuthController {
 
     /**
      * Displays the custom login page.
-     * Note: Spring Security handles the actual POST /login authentication.
-     *
-     * @return View name for the login page
      */
     @GetMapping("/login")
     public String loginPage() {
