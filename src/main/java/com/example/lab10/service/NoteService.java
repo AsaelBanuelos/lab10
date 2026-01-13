@@ -37,9 +37,7 @@ public class NoteService {
         this.userRepository = userRepository;
     }
 
-    // ============================================================
     // HELPER METHOD - Getting the current authenticated user
-    // ============================================================
 
     /**
      * Gets the currently authenticated user from Spring Security context.
@@ -70,9 +68,7 @@ public class NoteService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
     }
 
-    // ============================================================
     // READ OPERATIONS - Getting notes
-    // ============================================================
 
     /**
      * Retrieves all notes belonging to the current authenticated user.
@@ -102,9 +98,7 @@ public class NoteService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found"));
     }
 
-    // ============================================================
     // CREATE OPERATIONS - Creating notes
-    // ============================================================
 
     /**
      * Creates a new note owned by the current authenticated user.
@@ -126,9 +120,7 @@ public class NoteService {
         return noteRepository.save(note);
     }
 
-    // ============================================================
     // UPDATE OPERATIONS - Editing notes
-    // ============================================================
 
     /**
      * Updates an existing note with new title and content.
@@ -146,9 +138,7 @@ public class NoteService {
         return noteRepository.save(note);
     }
 
-    // ============================================================
     // DELETE OPERATIONS - Removing notes
-    // ============================================================
 
     /**
      * Deletes a note belonging to the current user.

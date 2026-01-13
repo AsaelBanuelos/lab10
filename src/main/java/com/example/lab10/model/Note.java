@@ -43,9 +43,6 @@ public class Note {
 
      * Relationship details:
      * - ManyToOne: Many notes can belong to one user
-     * - optional = false: Every note MUST have an owner (cannot be null)
-     * - fetch = FetchType.LAZY: User is loaded from database only when accessed
-     * - @JoinColumn: Uses "user_id" as the foreign key column
      */
     // every note belongs to exactly one user
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

@@ -17,7 +17,7 @@ public class SecurityConfig {
 
     /**
      * Creates a DAO-based authentication provider.
-     *
+
      * This provider bridges Spring Security with our custom user authentication:
      * 1. UserDetailsService - loads user data from the database
      * 2. PasswordEncoder - verifies passwords using BCrypt hashing
