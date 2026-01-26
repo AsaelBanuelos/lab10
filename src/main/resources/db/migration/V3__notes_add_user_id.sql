@@ -1,15 +1,13 @@
 -- Rebuild notes table to properly link notes to users
--- SQLite is a bit limited with ALTER TABLE, so the safest way
--- is to recreate the table with the new column and constraints.
 
 -- Step 1: Create a new notes table that includes user ownership
 CREATE TABLE IF NOT EXISTS notes_new (
-  id INTEGER PRIMARY KEY AUTOINCREMENT, -- unique note ID
-  title TEXT NOT NULL,                  -- note title
-  content TEXT NOT NULL,                -- note content
-  user_id INTEGER NOT NULL,             -- which user owns this note
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  user_id INTEGER NOT NULL,
   CONSTRAINT fk_notes_user
-    FOREIGN KEY (user_id) REFERENCES users(id) -- enforce ownership at DB level
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 -- Step 2: Remove the old notes table (the one without user_id)
