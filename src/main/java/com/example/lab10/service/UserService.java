@@ -5,9 +5,9 @@ import com.example.lab10.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Service layer for user management and authentication operations.
- * Handles user registration, password hashing, and user-related business logic.
+/*
+ * Service for user-related logic.
+ * I mainly use this for user registration and password hashing.
  */
 @Service
 public class UserService {
@@ -15,46 +15,41 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Constructor injection for dependencies.
-     */
+    // I inject the repository and the password encoder
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * Registers a new user account with a hashed password.
-
-     * Registration process:
-     * 1. Normalize email (trim whitespace, convert to lowercase)
-     * 2. Hash the password using BCrypt
-     * 3. Create User entity with normalized email and hashed password
-     * 4. Set default role to ROLE_USER
-     * 5. Save to database
-
-     * Security features:
-     * - Password is hashed with BCrypt (strength 12)
-     * - Email normalization prevents duplicate accounts with different casing
-     * - Username and email are set to the same value
+    /*
+     * Registers a new user.
      */
     public User register(String email, String rawPassword) {
-        // Normalize email to avoid case-sensitivity issues and whitespace problems
+
+        // I normalize the email to avoid duplicates with different casing
         String normalizedEmail = email.trim().toLowerCase();
 
-        // Hash the password using BCrypt
-        // The encoder automatically generates a unique salt for each password
+        /*
+         *hashes the password using BCrypt.
+         */
         String hashed = passwordEncoder.encode(rawPassword);
 
-        // Debug logs: Track registration and verify password hashing
-//        System.out.println("REGISTER -> email=" + "[" + normalizedEmail + "]" + ", hashed=" + hashed);
+        /*
+         * Debug:
+         * I keep these commented out to avoid logging sensitive data.
+         */
+//        System.out.println("REGISTER -> email=" + normalizedEmail + ", hashed=" + hashed);
 //        System.out.println("ENCODER TEST -> matches? " + passwordEncoder.matches(rawPassword, hashed));
 
-        // Create new user with normalized email as both username and email
-        // Default role is ROLE_USER
+        /*
+         *creates the user entity.
+         * - username = email
+         * - email = email
+         * - password = hashed password
+         * - role = ROLE_USER (default)
+         */
         User user = new User(normalizedEmail, normalizedEmail, hashed, "ROLE_USER");
 
-        // Persist the user to the database
         return userRepository.save(user);
     }
 }

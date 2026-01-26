@@ -6,28 +6,27 @@
 </head>
 <body>
 <h1>Login</h1>
-
-<!-- login page -->
 <form method="post" action="/login">
-    <!-- CSRF token is required when CSRF is enabled -->
+    <!--
+CSRF token is required for POST requests.
+Spring Security checks this token to protect against CSRF attacks.
+-->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
 
+    <!-- Email field (used as username in Spring Security) -->
     <div>
         <label>Email</label>
         <input type="text" name="username"/>
     </div>
-
     <div>
         <label>Password</label>
         <input type="password" name="password"/>
     </div>
-
     <button type="submit">Sign in</button>
 </form>
-
 <p th:if="${param.error}">Invalid username or password</p>
 <p th:if="${param.logout}">You have been logged out</p>
-
 <p><a href="/register">Create account</a></p>
+
 </body>
 </html>

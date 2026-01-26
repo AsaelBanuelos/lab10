@@ -8,56 +8,43 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Custom UserDetailsService implementation for Spring Security.
- * Loads user data from the database during authentication.
-
- * This service bridges the application's User entity with Spring Security's
- * UserDetails interface, allowing Spring Security to authenticate users
- * against our database.
+/*
+ * Spring Security uses this during login.
+ * I load the user from the DB and convert it to UserDetails.
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    /**
-     * Constructor injection for UserRepository dependency.
-     */
+    // injects the repository so I can fetch users from the DB
     public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Loads user details by username for Spring Security authentication.
-     *
-     * This method is called automatically by Spring Security when a user
-     * attempts to log in It:
-     * 1. Normalizes the username (email) to lowercase
-     * 2. Queries the database for the user
-     * 3. Converts the User entity to Spring Security's UserDetails
-     * 4. Includes the user's role for authorization
+    /*
+     * Spring calls this when someone tries to log in.
+     * here finds the user by email and return a UserDetails object.
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Normalize the username to lowercase and trim whitespace
-        // This ensures consistent login behavior
+
+        // I normalize the email to avoid login issues (spaces / uppercase)
         String normalized = username.trim().toLowerCase();
 
-        // Debug log: Track authentication attempts
-//        System.out.println("LOAD USER -> username=" + "[" + normalized + "]");
-
-        // Query the database for the user by email
+        // I load the user from DB (if not found -> login fails)
         User user = userRepository.findByEmail(normalized)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + normalized));
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found: " + normalized)
+                );
 
-        // Debug logs: Show retrieved user information
+
+//        DEBUG:
 //        System.out.println("LOAD USER -> found=" + user.getEmail());
 //        System.out.println("LOAD USER -> storedHash=" + user.getPassword());
 //        System.out.println("LOAD USER -> role=" + user.getRole());
 
-        // Convert our User entity to Spring Security's UserDetails
-        // This includes email, password hash, and role(s) for authorization
+        //  converts my User entity into Spring Security's UserDetails
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),

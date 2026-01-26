@@ -4,7 +4,9 @@
 <h2>Create Note</h2>
 
 <form th:action="@{/notes/create}" th:object="${createNoteRequest}" method="post">
-    <!-- CSRF token is required for POST requests when CSRF is enabled -->
+    <!--
+Here shows CSRF token is required for POST requests.
+-->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
 
     <div>
@@ -31,7 +33,6 @@
 <form th:action="@{/notes/upload}" method="post" enctype="multipart/form-data">
     <!-- CSRF token is required for file upload POST -->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-
     <input type="file" name="file"/>
     <button type="submit">Upload</button>
 </form>

@@ -3,23 +3,25 @@ package com.example.lab10.dto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-/**
- * Custom validator implementation for the @ValidTitle annotation.
- * Validates that a title string meets minimum length requirements.
+/*
+ * Validator for the @ValidTitle annotation.
+ * I use this to enforce custom rules for note titles.
  */
 public class ValidTitleValidator implements ConstraintValidator<ValidTitle, String> {
 
-    /**
-     * Validates the title string according to custom rules.
+    /*
+     * This method runs automatically during validation.
+     * It checks if the title follows my custom rules.
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        // Allow null values - @NotBlank will handle null validation
+
+        // If the value is null, I let @NotBlank handle the error
         if (value == null) {
             return true;
         }
 
-        // Check that the trimmed title has at least 3 characters
+        //tr9ms spaces and require at least 3 characters
         return value.trim().length() >= 3;
     }
 }

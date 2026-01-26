@@ -3,27 +3,25 @@
 <body>
 <h2>Edit Note</h2>
 
-<form th:action="@{/notes/{id}/edit(id=${noteId})}" th:object="${createNoteRequest}" method="post">
+<form th:action="@{/notes/{id}/edit(id=${noteId})}" th:object="${createNoteRequest}" method="post"><!--
+Here shows CSRF token is required.
+-->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-
     <div>
         <label>Title</label><br/>
         <input type="text" th:field="*{title}" />
         <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
     </div>
-
     <br/>
-
     <div>
         <label>Content</label><br/>
         <textarea th:field="*{content}"></textarea>
         <div th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
     </div>
-
     <br/>
     <button type="submit">Save changes</button>
 </form>
-
 <p><a href="/notes">Back</a></p>
+
 </body>
 </html>

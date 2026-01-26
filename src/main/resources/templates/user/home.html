@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-
+<!--
+User area page.
+Accessible to users with ROLE_USER or ROLE_ADMIN.
+-->
 <h2>User Area</h2>
 <p>Logged in as: <b th:text="${email}"></b></p>
 <p>Authorities: <span th:text="${authorities}"></span></p>
-
 <p><a href="/notes">Go to Notes</a></p>
-
+<!--
+Logout form.
+Must be POST and include CSRF token when CSRF protection is enabled.
+-->
 <form th:action="@{/logout}" method="post" style="display:inline;">
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
     <button type="submit">Logout</button>

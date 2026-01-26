@@ -6,7 +6,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ✅ Spring Boot Parent: maneja versiones automáticamente -->
+    <!-- Spring Boot parent: manages dependency versions -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -21,56 +21,57 @@
     <description>Lab 10 - HTTP Server with Spring Boot</description>
 
     <properties>
+        <!-- Java version used by the project -->
         <java.version>17</java.version>
     </properties>
 
     <dependencies>
 
-        <!-- ✅ HTTP / REST -->
+        <!-- Web (controllers, HTTP, REST endpoints) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- ✅ JPA -->
+        <!-- JPA + Hibernate (database access with entities/repositories) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- ✅ Flyway (correcto) -->
+        <!-- Flyway (database migrations) -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
 
-        <!-- ✅ Security -->
+        <!-- Spring Security (auth, roles, CSRF, sessions) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- ✅ Validation -->
+        <!-- Validation (DTO validation like @NotBlank, custom validators, etc.) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- ✅ SQLite JDBC -->
+        <!-- SQLite JDBC driver (connects app to SQLite DB file) -->
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.47.1.0</version>
         </dependency>
 
-        <!-- ✅ Hibernate dialect for SQLite -->
+        <!-- SQLite dialect for Hibernate (so Hibernate understands SQLite SQL) -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-community-dialects</artifactId>
             <version>6.6.3.Final</version>
         </dependency>
 
-        <!-- ✅ DevTools (opcional) -->
+        <!-- DevTools (optional: auto restart during development) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -78,24 +79,30 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- ✅ Lombok (opcional) -->
+        <!-- Lombok (optional: reduce boilerplate, not critical for runtime) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!--thymeleaf-->
+        <!-- Thymeleaf (MVC templates) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-
-        <!-- ✅ Tests -->
+        <!-- Testing (JUnit, Spring test, security test helpers) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Security tests (MockMvc with login/roles/csrf helpers) -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -104,6 +111,7 @@
     <build>
         <plugins>
 
+            <!-- Compiler plugin + Lombok annotation processing -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -117,10 +125,12 @@
                 </configuration>
             </plugin>
 
+            <!-- Spring Boot plugin to run/build the app -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!-- Exclude Lombok from final jar -->
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

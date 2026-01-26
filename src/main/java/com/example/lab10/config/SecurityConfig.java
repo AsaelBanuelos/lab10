@@ -1,26 +1,40 @@
 package com.example.lab10.config;
 
+import jakarta.servlet.http.HttpServletResponse;
+import com.example.lab10.security.SimpleRateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-/**
- * Main security configuration for the application.
- * Configures Spring Security authentication and authorization rules.
+/*
+ * Main security config.
+ * Here I set: login, roles, CSRF/session rules, headers, and rate limiting.
  */
 @Configuration
 public class SecurityConfig {
 
-    /**
-     * Creates a DAO-based authentication provider.
+    // Blocks too many login/register attempts (basic brute-force protection)
+    private final SimpleRateLimitFilter simpleRateLimitFilter;
 
-     * This provider bridges Spring Security with our custom user authentication:
-     * 1. UserDetailsService - loads user data from the database
-     * 2. PasswordEncoder - verifies passwords using BCrypt hashing
+    public SecurityConfig(SimpleRateLimitFilter simpleRateLimitFilter) {
+        this.simpleRateLimitFilter = simpleRateLimitFilter;
+    }
+
+    /*
+     * Connects Spring Security with my DB users.
+     * Uses UserDetailsService + PasswordEncoder (BCrypt).
      */
     @Bean
     public DaoAuthenticationProvider authProvider(
@@ -33,66 +47,96 @@ public class SecurityConfig {
         return provider;
     }
 
-    /**
-     * Configures the security filter chain with authentication and authorization rules.
-     *
-     * Security features configured:
-     * - CSRF protection (enabled by default)
-     * - Custom authentication provider
-     * - URL-based authorization rules
-     * - Form-based login with custom page
-     * - Logout functionality
-     *
-     * Authorization rules (in order):
-     * 1. Public paths - no authentication required:
-     *    - /login, /register, /error, /hello, /headers
-     *
-     * 2. Admin-only paths - require ROLE_ADMIN:
-     *    - /admin and /admin/** (admin panel and all admin endpoints)
-     *
-     * 3. User-accessible paths - require ROLE_USER or ROLE_ADMIN:
-     *    - /user and /user/** (user home and user endpoints)
-     *    - /notes/** (note management) - covered by authenticated() below, because notes are for any logged-in user
-     *
-     * 4. Everything else - requires authentication (logged in):
-     *    - Any other path requires user to be authenticated
+    // Needed for "max 1 session per user" feature
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    // Publishes session create/destroy events (helps session limiting work correctly)
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+
+    /*
+     * Main Spring Security rules.
+     * This is basically "who can access what" + session/logout/headers.
      */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SessionRegistry sessionRegistry) throws Exception {
+
+        // If not logged in, send user to /login
+        AuthenticationEntryPoint entryPoint =
+                (request, response, authException) -> response.sendRedirect("/login");
+
+        // If logged in but no permission, show 403 page (not a redirect)
+        AccessDeniedHandler accessDeniedHandler = (request, response, ex) -> {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 visible in Network tab
+            request.setAttribute("statusCode", 403);
+            request.setAttribute("message", "Forbidden - you don't have permission to access this page.");
+            request.getRequestDispatcher("/forbidden").forward(request, response);
+        };
+
         http
+                // Rate limiting before auth filter (so it blocks brute-force early)
+                .addFilterBefore(simpleRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // Security headers (check them in DevTools -> Network -> Response Headers)
+                .headers(headers -> headers
+                        .contentTypeOptions(Customizer.withDefaults()) // nosniff
+                        .frameOptions(frame -> frame.deny())          // clickjacking protection
+                        .referrerPolicy(ref -> ref.policy(
+                                ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                        .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))
+                )
+
+                // Authorization rules (public vs roles)
                 .authorizeHttpRequests(auth -> auth
-                        // Public
-                        .requestMatchers("/login", "/register", "/error", "/hello", "/headers").permitAll()
-
-                        // cover BOTH "/admin" and "/admin/**"
+                        .requestMatchers("/login", "/register", "/error", "/hello", "/headers",
+                                "/rate-limit", "/forbidden", "/favicon.ico").permitAll()
                         .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
-
-                        //  cover BOTH "/user" and "/user/**"
                         .requestMatchers("/user", "/user/**").hasAnyRole("USER", "ADMIN")
-
-                        // Everything else
                         .anyRequest().authenticated()
                 )
 
+                // Custom 401/403 handling
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(entryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
+
+                // Form login (MVC)
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()
-
-                        // this avoids redirecting to "/" (server error) and redirects based on role
                         .successHandler((request, response, authentication) -> {
+                            // After login, redirect depending on role
                             boolean isAdmin = authentication.getAuthorities().stream()
                                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-                            if (isAdmin) {
-                                response.sendRedirect("/admin");
-                            } else {
-                                response.sendRedirect("/notes");
-                            }
+                            if (isAdmin) response.sendRedirect("/admin");
+                            else response.sendRedirect("/notes");
                         })
                 )
-                .logout(logout -> logout.logoutUrl("/logout"));
+
+                // Logout clears session + cookie
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessUrl("/login?logout")
+                )
+
+                // Session hardening: new session on login + only 1 active session
+                .sessionManagement(sm -> sm
+                        .sessionFixation(sf -> sf.migrateSession())
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                        .sessionRegistry(sessionRegistry)
+                );
 
         return http.build();
     }
-
 }

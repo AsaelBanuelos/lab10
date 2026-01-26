@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>429 Too Many Requests</title>
+</head>
+<body>
+<h2>Too Many Requests</h2>
+<p th:text="${message}">Too Many Requests - Please wait and try again.</p>
+<p>
+    Status:
+    <span th:text="${statusCode}">429</span>
+    <br>
+    Retry again in
+    <span th:text="${retryAfterSeconds}">60</span> sec
+</p>
+<p><a href="/login">Back to login</a></p>
+
+</body>
+</html>

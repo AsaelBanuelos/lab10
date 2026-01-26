@@ -8,25 +8,28 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Controller for authentication-related endpoints.
- * Handles user registration and login page display.
+/*
+ * Controller for auth-related pages.
+ * I handle register and login pages here.
+ * The actual login process is handled by Spring Security.
  */
 @Controller
 public class AuthController {
 
+    // I use this service to create users and hash passwords
     private final UserService userService;
 
-    /**
-     * Constructor injection for UserService dependency.
+    /*
+     * Constructor injection.
+     * Spring injects UserService automatically.
      */
     public AuthController(UserService userService) {
         this.userService = userService;
     }
 
-    /**
-     * Displays the user registration form.
-     * Creates an empty RegisterRequest object and binds it to the form.
+    /*
+     * Shows the registration page.
+     *  sends an empty DTO so Thymeleaf can bind form fields.
      */
     @GetMapping("/register")
     public String registerForm(Model model) {
@@ -34,34 +37,32 @@ public class AuthController {
         return "register";
     }
 
-    /**
-     * Processes the registration form submission.
-     * Validates user input and creates a new user account.
-
-     * Validation includes:
-     * - Email format check
-     * - Password minimum length
-     * - Required field validation
+    /*
+     * Handles registration form submit.
+     * @Valid runs all validation rules on the DTO.
      */
     @PostMapping("/register")
     public String registerSubmit(
             @Valid @ModelAttribute("registerRequest") RegisterRequest req,
             BindingResult binding
     ) {
-        // If validation fails, return to the form with error messages
+        // If validation fails, I show the form again with errors
         if (binding.hasErrors()) {
             return "register";
         }
 
-        // Create the user with default ROLE_USER role
+        /*
+         *  creates the user here.
+         * Password hashing and default role are handled in the service.
+         */
         userService.register(req.getEmail(), req.getPassword());
 
-        // Redirect to login page after successful registration
         return "redirect:/login";
     }
 
-    /**
-     * Displays the custom login page.
+    /*
+     * Shows the custom login page.
+     * Spring Security handles authentication, not this controller.
      */
     @GetMapping("/login")
     public String loginPage() {

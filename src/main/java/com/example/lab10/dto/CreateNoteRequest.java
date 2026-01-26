@@ -3,51 +3,62 @@ package com.example.lab10.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/**
- * Data Transfer Object (DTO) for creating a new note.
- * This class validates user input from forms or JSON requests.
+/*
+ * DTO (Data Transfer Object) used when creating or editing a note.
+ *
+ * This class defines validation rules for user input coming from:
+ * - HTML forms
+ * - JSON API requests
+ *
+ * Validation is enforced server-side using Jakarta Bean Validation.
  */
 public class CreateNoteRequest {
 
-    /**
-     * The title of the note.
-     * Must not be blank and must be at least 3 characters long.
+    /*
+     * Title of the note.
+     *
+     * Rules:
+     * - must not be empty or only whitespace
+     * - must pass the custom @ValidTitle validator (minimum length, custom logic)
      */
     @NotBlank(message = "Title must not be blank")
     @ValidTitle(message = "Title must be at least 3 characters long")
     private String title;
 
-    /**
-     * The content/body of the note.
-     * Must not be blank and cannot exceed 1000 characters.
+    /*
+     * Content/body of the note.
+     *
+     * Rules:
+     * - must not be empty
+     * - maximum length is 1000 characters to avoid very large inputs
      */
     @NotBlank(message = "Content must not be blank")
     @Size(max = 1000, message = "Content must be at most 1000 characters")
     private String content;
 
-    /**
-     * Gets the title of the note.
+    /*
+     * Getter for the note title.
      */
     public String getTitle() {
         return title;
     }
 
-    /**
-     * Sets the title of the note.
+    /*
+     * Setter for the note title.
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
-    /**
-     * Gets the content of the note.
+    /*
+     * Getter for the note content.
      */
     public String getContent() {
         return content;
     }
 
-    /**
-     * Sets the content of the note.
+    /*
+     * Setter for the note content.
      */
     public void setContent(String content) {
         this.content = content;

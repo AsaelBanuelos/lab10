@@ -12,23 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-/**
- * Controller for note management operations.
- * Handles CRUD operations for notes (Create, Read, Update, Delete) and file uploads.
+/*
+ * MVC controller for notes.
+ * Here I handle listing, creating, editing, deleting notes,
+ * plus a JSON endpoint and file uploads.
  *
- * All endpoints are protected and require authentication.
- * Users can only access and modify their own notes.
- *
- * URL structure: /notes/*
- * Supported operations:
- * - GET /notes - List all user's notes
- * - GET /notes/create - Show note creation form
- * - POST /notes/create - Submit new note from HTML form
- * - POST /notes/api - Create note from JSON (REST API)
- * - POST /notes/upload - Upload files
- * - GET /notes/{id}/edit - Show edit form for note
- * - POST /notes/{id}/edit - Submit edited note
- * - POST /notes/{id}/delete - Delete a note
+ * User isolation is enforced in NoteService, not here.
  */
 @Controller
 @RequestMapping("/notes")
@@ -36,42 +25,39 @@ public class NoteController {
 
     private final NoteService noteService;
 
-    /**
-     * Constructor that injects the NoteService dependency.
-     * Spring automatically provides the service when this controller is created.
-     */
+    // I inject NoteService using constructor injection
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
     }
 
-    // ============================================================
-    // READ OPERATIONS - Getting and displaying notes
-    // ============================================================
+    // -----------------------------
+    // LIST NOTES (only mine)
+    // -----------------------------
 
-    /**
-     * Displays the list of all notes belonging to the current user.
-     * Also lists all uploaded files in the user's uploads directory.
+    /*
+     * Shows the list of my notes.
+     * I also show uploaded files from the local upload folder.
      */
     @GetMapping
     public String list(
             @RequestParam(value = "uploaded", required = false) String uploaded,
             Model model
     ) throws Exception {
-        // Fetch all notes belonging to the current authenticated user
+
+        // I only load notes that belong to the logged-in user
         model.addAttribute("notes", noteService.findMyNotes());
 
-        // Add a flag to show the upload success message if user just uploaded a file
+        // This flag is used to show an "upload successful" message
         model.addAttribute("uploaded", uploaded != null);
 
-        // Get the user's home directory and set up the uploads folder path
+        // Upload directory is inside the OS user home folder
         String userHome = System.getProperty("user.home");
         java.nio.file.Path uploadDir = java.nio.file.Paths.get(userHome, "lab10_uploads");
 
-        // List all uploaded files in the directory (if it exists)
+        // If the folder exists, I list the uploaded files
         java.util.List<String> files = java.util.Collections.emptyList();
         if (java.nio.file.Files.exists(uploadDir)) {
             try (java.util.stream.Stream<java.nio.file.Path> stream = java.nio.file.Files.list(uploadDir)) {
-                // Get all files (not directories) and extract their names
                 files = stream
                         .filter(java.nio.file.Files::isRegularFile)
                         .map(p -> p.getFileName().toString())
@@ -79,54 +65,29 @@ public class NoteController {
             }
         }
 
-        // Pass the list of uploaded files to the template for display
+        // I send the file names to the view
         model.addAttribute("uploadedFiles", files);
 
         return "note/list";
     }
 
-    /**
-     * Displays the form for creating a new note.
-     * Prepares an empty note creation form for the user to fill in.
+    // -----------------------------
+    // CREATE NOTE (form)
+    // -----------------------------
+
+    /*
+     * Shows the create note form.
+     * I send an empty DTO so Thymeleaf can bind the inputs.
      */
     @GetMapping("/create")
     public String showCreate(Model model) {
-        // Create an empty DTO object for the form to bind to
         model.addAttribute("createNoteRequest", new CreateNoteRequest());
         return "note/create";
     }
 
-    /**
-     * Displays the edit form for an existing note.
-     * Pre-fills the form with the note's current title and content.
-     */
-    @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable("id") Integer id, Model model) {
-        // Retrieve the note - this also checks ownership (throws 404 if not owned by user)
-        var note = noteService.getMineOr404(id);
-
-        // Create a DTO and pre-fill it with the note's current values
-        CreateNoteRequest dto = new CreateNoteRequest();
-        dto.setTitle(note.getTitle());
-        dto.setContent(note.getContent());
-
-        // Pass the note ID and pre-filled form to the template
-        model.addAttribute("noteId", id);
-        model.addAttribute("createNoteRequest", dto);
-        return "note/edit";
-    }
-
-    // ============================================================
-    // CREATE OPERATIONS - Creating new notes
-    // ============================================================
-
-    /**
-     * Creates a new note from an HTML form submission.
-     * This method accepts form-encoded data (typical HTML form).
-
-     * Validation:
-     * - Title: Not blank, minimum 3 characters
-     * - Content: Not blank, maximum 1000 characters
+    /*
+     * Creates a note from an HTML form.
+     * @Valid runs validation on the DTO.
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String createFromForm(
@@ -134,42 +95,59 @@ public class NoteController {
             BindingResult binding,
             Model model
     ) {
-        // Check if any validation errors occurred
+        // If validation fails, I reload the form with error messages
         if (binding.hasErrors()) {
-            // Return to the form so user can see and fix the validation errors
             return "note/create";
         }
 
-        // Create the note using the service layer (handles DB save and ownership assignment)
+        // I save the note and link it to the current user
         noteService.create(req.getTitle(), req.getContent());
 
-        // Redirect to the notes list page (Post-Redirect-Get prevents form re-submission)
+        // I redirect to avoid form resubmission on refresh
         return "redirect:/notes";
     }
 
-    /**
-     * Creates a new note from a JSON request body.
-     * This is a REST API endpoint for programmatic note creation.
-     * Useful for testing or integrating with JavaScript/other clients.
-     *
-     * Validation: Same as HTML form creation
+    // -----------------------------
+    // CREATE NOTE (JSON)
+    // -----------------------------
+
+    /*
+     * Creates a note using JSON.
+     * This is mainly to demonstrate JSON + validation.
      */
     @PostMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public String createFromJson(@Valid @RequestBody CreateNoteRequest req) {
-        // Create note from JSON data (same service call as form submission)
         noteService.create(req.getTitle(), req.getContent());
-
-        // Return redirect URL
         return "redirect:/notes";
     }
 
-    // ============================================================
-    // UPDATE OPERATIONS - Editing existing notes
-    // ============================================================
+    // -----------------------------
+    // EDIT NOTE
+    // -----------------------------
 
-    /**
-     * Updates an existing note with new title and content.
+    /*
+     * Shows the edit form for a note.
+     * getMineOr404() makes sure the note belongs to me.
+     */
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable("id") Integer id, Model model) {
+        var note = noteService.getMineOr404(id);
+
+        // I pre-fill the form with the current note values
+        CreateNoteRequest dto = new CreateNoteRequest();
+        dto.setTitle(note.getTitle());
+        dto.setContent(note.getContent());
+
+        // I need the noteId in the view to build the edit URL
+        model.addAttribute("noteId", id);
+        model.addAttribute("createNoteRequest", dto);
+        return "note/edit";
+    }
+
+    /*
+     * Saves changes from the edit form.
+     * Ownership is checked inside the service.
      */
     @PostMapping(value = "/{id}/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String editSubmit(
@@ -178,78 +156,67 @@ public class NoteController {
             BindingResult binding,
             Model model
     ) {
-        // Check if any validation errors occurred
+        // If validation fails, I stay on the edit page
         if (binding.hasErrors()) {
-            // Re-add the note ID so the form knows which note to edit
             model.addAttribute("noteId", id);
-            // Return to the form so user can see and fix the validation errors
             return "note/edit";
         }
 
-        // Update the note using the service layer (handles DB update and ownership check)
+        // I update the note only if it belongs to the current user
         noteService.updateMine(id, req.getTitle(), req.getContent());
 
-        // Redirect to the notes list page
         return "redirect:/notes";
     }
 
-    // ============================================================
-    // DELETE OPERATIONS - Removing notes
-    // ============================================================
+    // -----------------------------
+    // DELETE NOTE
+    // -----------------------------
 
-    /**
-     * Deletes a note belonging to the current user.
-     *
-     * Security: Ownership is verified by the service layer
-     * (will throw 404 if the note doesn't exist or isn't owned by the user)
+    /*
+     * Deletes a note.
+     * If the note is not mine, the service throws 404.
      */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Integer id) {
-        // Delete the note (service layer checks ownership)
         noteService.deleteMine(id);
-
-        // Redirect to the notes list page
         return "redirect:/notes";
     }
 
-    // ============================================================
-    // FILE UPLOAD OPERATIONS - Handling file uploads
-    // ============================================================
+    // -----------------------------
+    // FILE UPLOAD
+    // -----------------------------
 
-    /**
-     * Handles multipart file uploads from the user.
-     * Files are saved to a directory in the user's home folder.
+    /*
+     * Handles file uploads.
+     * Files are saved in {user.home}/lab10_uploads.
+     * This is fine for a lab demo.
      */
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String upload(@RequestParam("file") MultipartFile file) {
-        // Validate that a file was selected (not null or empty)
+
+        // If no file is selected, I return 400
         if (file == null || file.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File is empty");
         }
 
         try {
-            // Determine the upload directory in the user's home folder
+            // I make sure the upload folder exists
             String userHome = System.getProperty("user.home");
             java.nio.file.Path uploadDir = java.nio.file.Paths.get(userHome, "lab10_uploads");
-
-            // Create the uploads directory if it doesn't already exist
             java.nio.file.Files.createDirectories(uploadDir);
 
-            // Get the original file name from the upload
+            // I get the original filename from the browser
             String original = file.getOriginalFilename();
 
-            // Sanitize the file name:
-            // - Replace dangerous characters with underscores
-            // - These characters can be used for path traversal or other attacks
-            // - Dangerous characters: \ / : * ? " < > |
+            // I clean the filename to avoid dangerous characters
             String filename = (original == null || original.isBlank())
-                    ? "upload.bin"  // Default name if filename is missing
+                    ? "upload.bin"
                     : original.replaceAll("[\\\\/:*?\"<>|]", "_");
 
-            // Build the full path where the file will be saved
+            // Final path where the file will be stored
             java.nio.file.Path target = uploadDir.resolve(filename);
 
-            // Save the file to disk
+            // I save the file to disk
             try (java.io.InputStream in = file.getInputStream()) {
                 java.nio.file.Files.copy(
                         in,
@@ -259,17 +226,16 @@ public class NoteController {
             }
 
         } catch (Exception e) {
-            // Log the error for debugging purposes
+            // I log the error on the server side only
             e.printStackTrace();
 
-            // Throw an error response to the user
+            // I return a safe error message to the user
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     "Could not save file"
             );
         }
 
-        // Redirect to list page with upload success indicator
         return "redirect:/notes?uploaded=1";
     }
 }

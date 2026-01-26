@@ -5,26 +5,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/**
- * Controller for user-accessible endpoints.
- * Handles pages that authenticated users with ROLE_USER or ROLE_ADMIN can access.
- * Security: All methods require ROLE_USER or ROLE_ADMIN authority.
+/*
+ * Controller for pages accessible to logged-in users.
+ * I allow both USER and ADMIN roles to access this area.
+ * The role checks are done in SecurityConfig, not here.
  */
 @Controller
 public class UserAreaController {
 
-    /**
-     * Displays the user home/dashboard page.
+    /*
+     * Shows the user dashboard page.
+     * This method is only called if the user is authenticated
+     * and has the correct role.
      */
     @GetMapping("/user")
     public String userHome(Authentication authentication, Model model) {
-        // Get the logged-in user's email address
+
+        // gets the logged-in user's email/username
         model.addAttribute("email", authentication.getName());
 
-        // Get the user's authorities/roles (example: ROLE_USER, ROLE_ADMIN)
+        // shows the user's roles (USER / ADMIN)
         model.addAttribute("authorities", authentication.getAuthorities());
 
-        // Return the user home template
         return "user/home";
     }
 }

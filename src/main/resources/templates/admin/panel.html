@@ -7,9 +7,11 @@
 
 <p><a href="/notes">Go to Notes</a></p>
 <p><a href="/user">Go to User Area</a></p>
-
-<!-- Logout must be POST when CSRF is enabled -->
+<!--
+Here shows CSRF token is required .
+-->
 <form th:action="@{/logout}" method="post" style="display:inline;">
+    <!-- CSRF token automatically provided by Spring Security -->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
     <button type="submit">Logout</button>
 </form>

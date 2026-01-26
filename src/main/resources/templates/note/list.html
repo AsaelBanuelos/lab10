@@ -4,27 +4,21 @@
 
 <!-- Logout must be POST when CSRF is enabled -->
 <form th:action="@{/logout}" method="post" style="display:inline;">
+    <!-- CSRF token required for logout -->
     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
     <button type="submit">Logout</button>
 </form>
 
 <h2>Notes</h2>
-
 <p th:if="${uploaded}">SUCCESS: File uploaded successfully!</p>
-
 <hr/>
-
 <h3>Uploaded files</h3>
 <ul>
     <li th:each="f : ${uploadedFiles}" th:text="${f}"></li>
 </ul>
-
 <hr/>
-
 <a th:href="@{/notes/create}">Create new note</a>
-
 <hr/>
-
 <ul>
     <li th:each="n : ${notes}">
         <b th:text="${n.title}"></b>
@@ -36,7 +30,9 @@
         <!-- Edit -->
         <a th:href="@{/notes/{id}/edit(id=${n.id})}">Edit</a>
 
-        <!-- Delete (POST + CSRF) -->
+        <!--
+   Here shows CSRF token is required.
+   -->
         <form th:action="@{/notes/{id}/delete(id=${n.id})}"
               method="post"
               style="display:inline;">
