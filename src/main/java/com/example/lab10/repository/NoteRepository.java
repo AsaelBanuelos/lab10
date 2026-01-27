@@ -22,7 +22,6 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
 
     /*
      * Gets a note only if it belongs to the user.
-     *  uses this to enforce user isolation.
      */
     Optional<Note> findByIdAndOwner_Id(Integer id, Integer ownerId);
 

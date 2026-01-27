@@ -38,14 +38,12 @@ public class GlobalExceptionHandler {
 
     /*
      * Handles validation errors from JSON request bodies.
-     *
-     * This usually happens when using @RequestBody with @Valid.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleMethodArgumentNotValid(MethodArgumentNotValidException ex, Model model) {
 
-        // Do not expose validation internals or stack traces
+
         model.addAttribute("message", "Validation failed (JSON body).");
 
         return "error";
@@ -53,7 +51,6 @@ public class GlobalExceptionHandler {
 
     /*
      * Handles requests with unsupported Content-Type headers.
-     *
      * Example:
      * - client sends XML when only JSON or form data is allowed
      */
@@ -68,10 +65,9 @@ public class GlobalExceptionHandler {
 
     /*
      * Handles ResponseStatusException thrown manually in controllers.
-     *
-     * Controllers use this exception to:
-     * - return specific HTTP status codes
-     * - provide a controlled error message
+     * Controllers will  use this exception to:
+     *  return specific HTTP status codes
+     *  provide a controlled error message
      */
     @ExceptionHandler(ResponseStatusException.class)
     public String handleResponseStatus(
@@ -90,7 +86,6 @@ public class GlobalExceptionHandler {
 
     /*
      * Fallback handler for any unexpected exception.
-     *
      * This prevents stack traces from being shown to the user
      * and returns a generic server error message.
      */

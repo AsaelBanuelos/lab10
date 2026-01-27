@@ -17,5 +17,4 @@ DROP TABLE notes;
 ALTER TABLE notes_new RENAME TO notes;
 
 -- Step 4: Add an index on user_id
--- This makes "find my notes" queries faster and is used all the time
 CREATE INDEX IF NOT EXISTS idx_notes_user_id ON notes(user_id);

@@ -30,7 +30,7 @@ public class UserService {
         String normalizedEmail = email.trim().toLowerCase();
 
         /*
-         *hashes the password using BCrypt.
+         *Hashes the password using BCrypt.
          */
         String hashed = passwordEncoder.encode(rawPassword);
 
@@ -43,10 +43,6 @@ public class UserService {
 
         /*
          *creates the user entity.
-         * - username = email
-         * - email = email
-         * - password = hashed password
-         * - role = ROLE_USER (default)
          */
         User user = new User(normalizedEmail, normalizedEmail, hashed, "ROLE_USER");
 

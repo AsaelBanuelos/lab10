@@ -70,13 +70,12 @@ public class PasswordPolicyValidator implements ConstraintValidator<ValidPasswor
         if (!hasDigit) { setMsg(ctx, "Password must contain at least one digit"); return false; }
         if (!hasSpecial) { setMsg(ctx, "Password must contain at least one special character"); return false; }
 
-        // If we reach here, the password is strong enough
+        // If not the password is strong enough
         return true;
     }
 
     /*
      * Helper method to show a custom error message.
-     *
      * I use this so the user sees exactly
      * what rule failed instead of a generic message.
      */

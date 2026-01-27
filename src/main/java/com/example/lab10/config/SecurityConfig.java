@@ -82,7 +82,7 @@ public class SecurityConfig {
                 // Rate limiting before auth filter (so it blocks brute-force early)
                 .addFilterBefore(simpleRateLimitFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // Security headers (check them in DevTools -> Network -> Response Headers)
+                // Security headers
                 .headers(headers -> headers
                         .contentTypeOptions(Customizer.withDefaults()) // nosniff
                         .frameOptions(frame -> frame.deny())          // clickjacking protection
@@ -106,7 +106,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler)
                 )
 
-                // Form login (MVC)
+                // Form login
                 .formLogin(form -> form
                         .loginPage("/login")
                         .permitAll()

@@ -35,7 +35,6 @@ public class Note {
 
     /*
      * Owner of the note.
-     *
      * Many notes can belong to one user (ManyToOne).
      * The user_id column is a foreign key.
      */
