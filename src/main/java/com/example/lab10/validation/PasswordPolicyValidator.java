@@ -6,12 +6,12 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.Set;
 
 /*
- * Here i validate passwords during registration.
+ * Here i validate passwords during registration
  */
 public class PasswordPolicyValidator implements ConstraintValidator<ValidPassword, String> {
 
     /*
-     * Small blacklist of very common and weak passwords.
+     * Small blacklist of very common and weak passwords
      */
     private static final Set<String> COMMON = Set.of(
             "password", "password1", "password123",
@@ -20,7 +20,7 @@ public class PasswordPolicyValidator implements ConstraintValidator<ValidPasswor
     );
 
     /*
-     * This method is called automatically during validation.
+     * This method is called automatically during validation
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext ctx) {
@@ -75,9 +75,9 @@ public class PasswordPolicyValidator implements ConstraintValidator<ValidPasswor
     }
 
     /*
-     * Helper method to show a custom error message.
+     * Helper method to show a custom error message
      * I use this so the user sees exactly
-     * what rule failed instead of a generic message.
+     * what rule failed instead of a generic message
      */
     private void setMsg(ConstraintValidatorContext ctx, String msg) {
         ctx.disableDefaultConstraintViolation();

@@ -9,9 +9,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 /*
- * Controller for auth-related pages.
- * I handle register and login pages here.
- * The actual login process is handled by Spring Security.
+ * Controller for auth-related pages
+ * I handle register and login pages here
+ * The actual login process is handled by Spring Security
  */
 @Controller
 public class AuthController {
@@ -21,15 +21,15 @@ public class AuthController {
 
     /*
      * Constructor injection.
-     * Spring injects UserService automatically.
+     * Spring injects UserService automatically
      */
     public AuthController(UserService userService) {
         this.userService = userService;
     }
 
     /*
-     * Shows the registration page.
-     *  sends an empty DTO so Thymeleaf can bind form fields.
+     * Shows the registration page
+     *  sends an empty DTO so Thymeleaf can bind form fields
      */
     @GetMapping("/register")
     public String registerForm(Model model) {
@@ -38,8 +38,8 @@ public class AuthController {
     }
 
     /*
-     * Handles registration form submit.
-     * @Valid runs all validation rules on the DTO.
+     * Handles registration form submit
+     * @Valid runs all validation rules on the DTO
      */
     @PostMapping("/register")
     public String registerSubmit(
@@ -52,8 +52,8 @@ public class AuthController {
         }
 
         /*
-         *  creates the user here.
-         * Password hashing and default role are handled in the service.
+         *  creates the user here
+         * Password hashing and default role are handled in the service
          */
         userService.register(req.getEmail(), req.getPassword());
 
@@ -61,8 +61,8 @@ public class AuthController {
     }
 
     /*
-     * Shows the custom login page.
-     * Spring Security handles authentication, not this controller.
+     * Shows the custom login page
+     * Spring Security handles authentication, not this controller
      */
     @GetMapping("/login")
     public String loginPage() {

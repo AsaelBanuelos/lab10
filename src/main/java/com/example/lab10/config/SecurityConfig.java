@@ -20,7 +20,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 /*
  * Main security config.
- * Here I set: login, roles, CSRF/session rules, headers, and rate limiting.
+ * Here I set: login, roles, CSRF/session rules, headers, and rate limiting
  */
 @Configuration
 public class SecurityConfig {
@@ -33,8 +33,8 @@ public class SecurityConfig {
     }
 
     /*
-     * Connects Spring Security with my DB users.
-     * Uses UserDetailsService + PasswordEncoder (BCrypt).
+     * Connects Spring Security with my DB users
+     * Uses UserDetailsService + PasswordEncoder (BCrypt)
      */
     @Bean
     public DaoAuthenticationProvider authProvider(
@@ -60,8 +60,8 @@ public class SecurityConfig {
     }
 
     /*
-     * Main Spring Security rules.
-     * This is basically "who can access what" + session/logout/headers.
+     * Main Spring Security rules
+     * This is basically "who can access what" + session/logout/headers
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, SessionRegistry sessionRegistry) throws Exception {
@@ -85,7 +85,7 @@ public class SecurityConfig {
                 // Security headers
                 .headers(headers -> headers
                         .contentTypeOptions(Customizer.withDefaults()) // nosniff
-                        .frameOptions(frame -> frame.deny())          // clickjacking protection
+                        .frameOptions(frame -> frame.deny())
                         .referrerPolicy(ref -> ref.policy(
                                 ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'"))

@@ -6,17 +6,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /*
- * Controller for pages accessible to logged-in users.
- * I allow both USER and ADMIN roles to access this area.
- * The role checks are done in SecurityConfig, not here.
+ * Controller for pages accessible to logged-in users
+ * I allow both USER and ADMIN roles to access this area
+ * The role checks are done in SecurityConfig, not here
  */
 @Controller
 public class UserAreaController {
 
     /*
-     * Shows the user dashboard page.
+     * Shows the user dashboard page
      * This method is only called if the user is authenticated
-     * and has the correct role.
+     * and has the correct role
      */
     @GetMapping("/user")
     public String userHome(Authentication authentication, Model model) {

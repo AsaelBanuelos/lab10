@@ -13,11 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 /*
- * MVC controller for notes.
+ * MVC controller for notes
  * Here I handle listing, creating, editing, deleting notes,
- * plus a JSON endpoint and file uploads.
+ * plus a JSON endpoint and file uploads
  *
- * User isolation is enforced in NoteService, not here.
+ * User isolation is enforced in NoteService, not here
  */
 @Controller
 @RequestMapping("/notes")
@@ -33,10 +33,9 @@ public class NoteController {
     // -----------------------------
     // LIST NOTES (only mine)
     // -----------------------------
-
     /*
-     * Shows the list of my notes.
-     * I also show uploaded files from the local upload folder.
+     * Shows the list of my notes
+     * I also show uploaded files from the local upload folder
      */
     @GetMapping
     public String list(
@@ -74,10 +73,9 @@ public class NoteController {
     // -----------------------------
     // CREATE NOTE (form)
     // -----------------------------
-
     /*
-     * Shows the create note form.
-     * I send an empty DTO so Thymeleaf can bind the inputs.
+     * Shows the create note form
+     * I send an empty DTO so Thymeleaf can bind the inputs
      */
     @GetMapping("/create")
     public String showCreate(Model model) {
@@ -86,8 +84,8 @@ public class NoteController {
     }
 
     /*
-     * Creates a note from an HTML form.
-     * @Valid runs validation on the DTO.
+     * Creates a note from an HTML form
+     * @Valid runs validation on the DTO
      */
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String createFromForm(
@@ -110,10 +108,9 @@ public class NoteController {
     // -----------------------------
     // CREATE NOTE (JSON)
     // -----------------------------
-
     /*
-     * Creates a note using JSON.
-     * This is mainly to demonstrate JSON + validation.
+     * Creates a note using JSON
+     * This is mainly to demonstrate JSON + validation
      */
     @PostMapping(value = "/api", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -125,10 +122,9 @@ public class NoteController {
     // -----------------------------
     // EDIT NOTE
     // -----------------------------
-
     /*
-     * Shows the edit form for a note.
-     * getMineOr404() makes sure the note belongs to me.
+     * Shows the edit form for a note
+     * getMineOr404() makes sure the note belongs to me
      */
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable("id") Integer id, Model model) {
@@ -146,8 +142,8 @@ public class NoteController {
     }
 
     /*
-     * Saves changes from the edit form.
-     * Ownership is checked inside the service.
+     * Saves changes from the edit form
+     * Ownership is checked inside the service
      */
     @PostMapping(value = "/{id}/edit", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String editSubmit(
@@ -171,10 +167,9 @@ public class NoteController {
     // -----------------------------
     // DELETE NOTE
     // -----------------------------
-
     /*
-     * Deletes a note.
-     * If the note is not mine, the service throws 404.
+     * Deletes a note
+     * If the note is not mine, the service throws 404
      */
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Integer id) {
@@ -185,11 +180,9 @@ public class NoteController {
     // -----------------------------
     // FILE UPLOAD
     // -----------------------------
-
     /*
-     * Handles file uploads.
-     * Files are saved in {user.home}/lab10_uploads.
-     * This is fine for a lab demo.
+     * Handles file uploads
+    lab10_upload
      */
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String upload(@RequestParam("file") MultipartFile file) {

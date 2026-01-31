@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /*
- * Spring Security uses this during login.
- * I load the user from the DB and convert it to UserDetails.
+ * Spring Security uses this during login
+ * I load the user from the DB and convert it to UserDetails
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -23,8 +23,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     /*
-     * Spring calls this when someone tries to log in.
-     * here finds the user by email and return a UserDetails object.
+     * Spring calls this when someone tries to log in
+     * here finds the user by email and return a UserDetails object
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

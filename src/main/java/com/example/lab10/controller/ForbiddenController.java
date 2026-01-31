@@ -5,15 +5,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /*
- * Controller for the 403 Forbidden page.
- * I use this when a user is logged in but not allowed to access a page.
+ * Controller for the 403 Forbidden page
+ * I use this when a user is logged in but not allowed to access a page
  */
 @Controller
 public class ForbiddenController {
 
     /*
-     * Shows the forbidden page.
-     * Spring Security redirects the user here after a 403 error.
+     * Shows the forbidden page
+     * Spring Security redirects the user here after a 403 error
      */
     @GetMapping("/forbidden")
     public String forbidden(Model model) {

@@ -6,8 +6,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /*
- * Service for user-related logic.
- * I mainly use this for user registration and password hashing.
+ * Service for user-related logic
+ * I mainly use this for user registration and password hashing
  */
 @Service
 public class UserService {
@@ -22,7 +22,7 @@ public class UserService {
     }
 
     /*
-     * Registers a new user.
+     * Registers a new user and uses Bcrypt to hash the password
      */
     public User register(String email, String rawPassword) {
 
@@ -30,19 +30,19 @@ public class UserService {
         String normalizedEmail = email.trim().toLowerCase();
 
         /*
-         *Hashes the password using BCrypt.
+         *Hashes the password using BCrypt
          */
         String hashed = passwordEncoder.encode(rawPassword);
 
         /*
          * Debug:
-         * I keep these commented out to avoid logging sensitive data.
+         * I keep these commented out to avoid logging sensitive data
          */
 //        System.out.println("REGISTER -> email=" + normalizedEmail + ", hashed=" + hashed);
 //        System.out.println("ENCODER TEST -> matches? " + passwordEncoder.matches(rawPassword, hashed));
 
         /*
-         *creates the user entity.
+         *creates the user entity
          */
         User user = new User(normalizedEmail, normalizedEmail, hashed, "ROLE_USER");
 

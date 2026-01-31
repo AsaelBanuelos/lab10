@@ -13,11 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 /*
- * Service layer for notes.
- *
- * IMPORTANT:
- * This is where user isolation is enforced.
- * If this class is correct, User A can NEVER access User B’s notes.
+ * Service layer for notes
  */
 @Service
 public class NoteService {
@@ -26,7 +22,7 @@ public class NoteService {
     private final UserRepository userRepository;
 
     /*
-     * Injects repositories needed for note and user access.
+     * Injects repositories needed for note and user access
      */
     public NoteService(NoteRepository noteRepository, UserRepository userRepository) {
         this.noteRepository = noteRepository;
@@ -36,7 +32,6 @@ public class NoteService {
     // ============================================================
     // Helper: get the currently logged-in user
     // ============================================================
-
     /*
      * Gets the currently authenticated user from Spring Security.s
      */
@@ -64,9 +59,8 @@ public class NoteService {
     // ============================================================
     // READ operations
     // ============================================================
-
     /*
-     * Returns all notes that belong ONLY to the current user.
+     * Returns all notes that belong ONLY to the current user
      */
     public List<Note> findMyNotes() {
 
@@ -78,11 +72,10 @@ public class NoteService {
     }
 
     /*
-     * Returns one note only if it belongs to the current user.
+     * Returns one note only if it belongs to the current user
      */
     public Note getMineOr404(Integer noteId) {
 
-        // Get current user
         User me = currentUserOrThrow();
 
         // Look up note by ID + owner ID
@@ -95,7 +88,6 @@ public class NoteService {
     // ============================================================
     // CREATE operations
     // ============================================================
-
     /*
      * Creates a new note and assigns ownership
      */
@@ -114,9 +106,8 @@ public class NoteService {
     // ============================================================
     // UPDATE operations
     // ============================================================
-
     /*
-     * Updates a note ONLY if it belongs to the current user.
+     * Updates a note ONLY if it belongs to the current user
      */
     public Note updateMine(Integer noteId, String title, String content) {
 
@@ -134,9 +125,8 @@ public class NoteService {
     // ============================================================
     // DELETE operations
     // ============================================================
-
     /*
-     * Deletes a note ONLY if it belongs to the current user.
+     * Deletes a note ONLY if it belongs to the current user
      */
     public void deleteMine(Integer noteId) {
 

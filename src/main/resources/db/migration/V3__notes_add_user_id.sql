@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS notes_new (
 -- Step 2: Remove the old notes table (the one without user_id)
 DROP TABLE notes;
 
--- Step 3: Rename the new table so the app keeps using "notes"
+-- Step 3: Rename the new table so the app keeps using notes
 ALTER TABLE notes_new RENAME TO notes;
 
 -- Step 4: Add an index on user_id

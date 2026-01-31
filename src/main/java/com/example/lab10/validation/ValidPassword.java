@@ -6,11 +6,10 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 /*
- * Custom validation annotation for passwords.
- *
+ * Custom validation annotation for passwords
  * I put this on DTO fields (like RegisterRequest.password)
  * so Spring/Jakarta Validation will automatically call my
- * PasswordPolicyValidator during registration.
+ * PasswordPolicyValidator during registration
  */
 @Documented
 @Constraint(validatedBy = PasswordPolicyValidator.class)

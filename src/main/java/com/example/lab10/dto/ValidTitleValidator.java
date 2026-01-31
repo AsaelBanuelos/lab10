@@ -4,14 +4,14 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /*
- * Validator for the @ValidTitle annotation.
- * I use this to enforce custom rules for note titles.
+ * Validator for the @ValidTitle annotation
+ * I use this to enforce custom rules for note titles
  */
 public class ValidTitleValidator implements ConstraintValidator<ValidTitle, String> {
 
     /*
-     * This method runs automatically during validation.
-     * It checks if the title follows my custom rules.
+     * This method runs automatically during validation
+     * It checks if the title follows my custom rules
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

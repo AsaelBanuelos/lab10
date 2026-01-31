@@ -5,15 +5,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 /*
- * Simple public REST controller.
- * Used mainly for testing and HTTP demonstrations.
+ * Simple public REST controller
+ * Used mainly for testing and HTTP demonstrations
  */
 @RestController
 public class HelloController {
 
     /*
-     * Simple endpoint to check if the app is running.
-     * If this returns "OK", the server is up.
+     * Simple endpoint to check if the app is running
+     * If this returns "OK", the server is up
      */
     @GetMapping("/hello")
     public String hello() {
@@ -21,8 +21,8 @@ public class HelloController {
     }
 
     /*
-     * Endpoint that reads HTTP request headers.
-     * Useful to show how headers work in Spring.
+     * Endpoint that reads HTTP request headers
+     * Useful to show how headers work in Spring
      */
     @GetMapping("/headers")
     public String headers(

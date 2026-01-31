@@ -7,23 +7,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /*
- * Controller for the rate limit page.
- * I use this page when a client sends too many requests.
+ * Controller for the rate limit page
+ * I use this page when a client sends too many requests
  */
 @Controller
 public class RateLimitController {
 
     /*
-     * Shows the rate-limit page.
+     * Shows the rate-limit page
      * The rate limit filter forwards the request here
-     * when the limit is exceeded.
+     * when the limit is exceeded
      */
     @RequestMapping(value = "/rate-limit", method = {RequestMethod.GET, RequestMethod.POST})
     public String rateLimit(HttpServletRequest request, Model model) {
 
         /*
-         * The rate limit filter stores details in request attributes.
-         * I read them here to show a clear message to the user.
+         * The rate limit filter stores details in request attributes
+         * I read them here to show a clear message to the user
          */
         Object status = request.getAttribute("statusCode");
         Object msg = request.getAttribute("message");

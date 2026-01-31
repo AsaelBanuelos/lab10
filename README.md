@@ -1,9 +1,13 @@
-## Description
-This project is a **Spring Boot MVC application Session based Spring boot app** 
+# Spring Boot / MVC / HTTP / Security & Testing Labs
 
-The main goal is to understand how an HTTP server works by implementing
-basic endpoints and observing the full **request → response** flow,
-including headers, request bodies, validation, and HTTP status codes.
+## Description
+This project is a **session-based Spring Boot MVC application**.
+
+The main goal of the project is to understand how an **HTTP server** works by
+implementing endpoints and observing the full **request → response** flow,
+including headers, request bodies, validation, security, and HTTP status codes.
+
+The project was developed incrementally following **Labs 10 to 14**.
 
 ---
 
@@ -16,6 +20,7 @@ including headers, request bodies, validation, and HTTP status codes.
 - Flyway (database migrations)
 - SQLite
 - Jakarta Bean Validation
+- JUnit 5 & Mockito (testing)
 
 ---
 
@@ -27,23 +32,23 @@ including headers, request bodies, validation, and HTTP status codes.
 
 ## Implemented Features
 
-### 🔹 Lab 10 — HTTP Fundamentals
+### 🔹 Lab 10 :  HTTP Fundamentals
 - Correct use of HTTP methods (`GET`, `POST`)
 - MVC architecture (Controller → Service → Repository)
 - DTO-based validation using `@Valid`
 - Validation error handling in Thymeleaf views
 - File upload functionality
-- Proper request/response handling with status codes
+- Proper use of HTTP status codes
+- JSON endpoint consuming `application/json`
 
 ---
 
-### 🔹 Lab 11–12 — Authentication & Authorization
+### 🔹 Lab 11–12 :  Authentication & Authorization
 
 #### Authentication
 - User registration and login
-- Secure logout via `POST`
+- Secure logout using `POST`
 - Passwords hashed using **BCrypt (strength 12)**
-- Custom password policy with complexity rules
 
 #### Authorization
 - Role-based access control (`ROLE_USER`, `ROLE_ADMIN`)
@@ -56,13 +61,47 @@ including headers, request bodies, validation, and HTTP status codes.
 - CSRF protection enabled
 - CSRF tokens required for all POST requests
 - Unsafe operations are never exposed via GET
+- Session-based authentication
+- Session timeout configured
 
 ---
 
 ### 🔹 Database & Persistence
 - Schema managed with **Flyway migrations**
-- Consistent schema across environments
-- Native SQL query with parameter binding
+- SQLite database
+- Native SQL queries with parameter binding
+
+---
+
+### 🔹 Lab 13 : Advanced Session Security & Application Hardening
+
+This project follows the **session-based security track** (MVC application).
+
+Implemented security hardening measures include:
+
+- Session-based authentication using Spring Security
+- Sessions are invalidated on logout
+- Automatic session expiration configured via `server.servlet.session.timeout`
+- CSRF protection enabled for all state-changing requests
+- CSRF tokens required for all POST operations
+- Secure session cookies (`HttpOnly`, `SameSite`)
+- Security headers enabled by Spring Security:
+    - `X-Content-Type-Options`
+    - `X-Frame-Options`
+- Sensitive data is never logged (no passwords, hashes, or tokens in logs)
+- Basic rate limiting filter applied to authentication endpoints
+
+JWT and refresh token mechanisms were **not implemented**, as they apply to the REST-based security track and are not required for this MVC session-based application.
+
+---
+
+### 🔹 Lab 14 : Testing
+- Unit test for service logic (password hashing and user registration)
+- Integration tests for:
+    - CSRF protection
+    - Authentication-required routes
+    - Role-based access control
+- All tests pass using `mvn test`
 
 ---
 
@@ -77,36 +116,50 @@ Created automatically via Flyway migration:
 
 ## Main Endpoints
 
-Public:
+### Public
 - `/login`
 - `/register`
 
-Authenticated:
+### Authenticated
 - `/notes`
 - `/notes/create`
 - `/notes/{id}/edit`
 - `/notes/{id}/delete` (POST)
 
-Role restricted:
+### Role Restricted
 - `/user`
 - `/admin`
 
 ---
 
-## Setup
+## Setup & Run
 
 1. Create a `.env` file:
-DB_URL=jdbc:sqlite:database.db
+   DB_URL=jdbc:sqlite:database.db
+
 
 2. Run the application:
    ./mvnw spring-boot:run
 
-3. Then open:
+
+3. Open in browser:
    http://localhost:8080/login
 
 
 ---
 
+## Testing
+
+Run all tests with:
+./mvnw test
+
+
+Expected result:
+BUILD SUCCESS
+
+
+---
+
 ## Author
-Asael Banuelos Ortiz  
-Spring Boot – HTTP & Security Labs
+**Asael Banuelos Ortiz**  
+Spring Boot — HTTP, Security & Testing Labs

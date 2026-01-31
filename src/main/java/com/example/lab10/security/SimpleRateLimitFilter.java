@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 /*
  * This filter limits how many times a client can POST
- * to /login and /register in a short time.
+ * to /login and /register in a short time
  */
 @Component
 public class SimpleRateLimitFilter extends OncePerRequestFilter {
@@ -34,7 +34,7 @@ public class SimpleRateLimitFilter extends OncePerRequestFilter {
     private final Map<String, Deque<Long>> hits = new ConcurrentHashMap<>();
 
     /*
-     * Decide when this filter should NOT run.
+     * Decide when this filter should NOT run
      * I only want to rate-limit:
      * - POST /login
      * - POST /register
@@ -49,9 +49,9 @@ public class SimpleRateLimitFilter extends OncePerRequestFilter {
     }
 
     /*
-     * Main filter logic.
+     * Main filter logic
      * This runs once per request and checks if the client
-     * exceeded the allowed number of attempts.
+     * exceeded the allowed number of attempts
      */
     @Override
     protected void doFilterInternal(
@@ -70,8 +70,8 @@ public class SimpleRateLimitFilter extends OncePerRequestFilter {
         Deque<Long> q = hits.computeIfAbsent(ip, k -> new ConcurrentLinkedDeque<>());
 
         /*
-         * Removes timestamps that are outside the time window.
-         * This keeps only recent requests.
+         * Removes timestamps that are outside the time window
+         * This keeps only recent requests
          */
         while (true) {
             Long head = q.peekFirst();
@@ -81,7 +81,7 @@ public class SimpleRateLimitFilter extends OncePerRequestFilter {
         }
 
         /*
-         * If the limit is reached, block the request.
+         * If the limit is reached, block the request
          */
         if (q.size() >= LIMIT) {
             response.setStatus(429); // Too Many Requests
